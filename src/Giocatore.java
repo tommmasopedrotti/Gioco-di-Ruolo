@@ -20,8 +20,46 @@ public abstract class Giocatore {
         this.inventario = new ArrayList<>();
     }
 
+    public void attaccaMischia(Giocatore target, int danno) {
+
+        boolean haArma = false;
+
+        // cerco nell'inventario se ho almeno un'arma da mischia
+        for (Equip e : inventario) {
+
+            if (e.getTipo() == TipoEquip.ArmaMelee) {
+                haArma = true;
+                break;
+            }
+        }
+
+        // controllo l'istanza del mio oggetto e attacco solo se ho l'arma
+        if (!(this instanceof Guerriero) || !haArma) {
+            return;
+        }
+
+        // verifico se il target ha armature e le conto
+        int armature = 0;
+        for (Equip e : target.getInventario()) {
+            
+            if (e.getTipo() == TipoEquip.Armatura)
+                armature++;
+        }
+
+        // modifico i puntivita del target
+        target.setHp(target.getHp() - danno / (armature + 1)); 
+    }
+
     public int getHp() {
         return hp;
+    }
+
+    public void setHp(int hp) {
+
+        if (hp >= HP_MAX)
+            this.hp = HP_MAX;
+        else
+            this.hp = hp;
     }
 
     public int getMana() {
@@ -30,6 +68,10 @@ public abstract class Giocatore {
 
     public int getPeso() {
         return peso;
+    }
+
+    public ArrayList<Equip> getInventario() {
+        return inventario;
     }
 
     
