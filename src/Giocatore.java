@@ -9,15 +9,16 @@ public abstract class Giocatore {
     protected final int HP_MAX, MANA_MAX, PESO_MAX;
     protected Razza razza;
     protected ArrayList<Equip> inventario;
-
+    
     public Giocatore(String nome, int hp, int mana, int peso, Razza razza) {
         this.nome = nome;
         this.hp = this.HP_MAX = hp;
         this.mana = this.MANA_MAX = mana;
-        this.peso = this.PESO_MAX = peso;
+        this.peso = 0;
         this.razza = razza;
 
         this.inventario = new ArrayList<>();
+        this.PESO_MAX = 0;
     }
 
     public void attaccaMischia(Giocatore target, int danno) {
@@ -48,6 +49,39 @@ public abstract class Giocatore {
 
         // modifico i puntivita del target
         target.setHp(target.getHp() - danno / (armature + 1)); 
+    }
+
+    private void aggioraPeso() {
+        peso = 0;
+        for (Equip e : inventario) {
+            peso += e.getPeso();
+        }
+        
+    }
+
+    private void svuotaInventario() {
+        inventario.clear();
+        aggioraPeso();
+    }
+
+    private boolean isTroppoCarico() {
+        return peso > PESO_MAX;
+        
+    }
+
+    public boolean aggiungiEquip(Equip e) {
+
+       if(e.getPeso() + peso > PESO_MAX) return false;
+       inventario.add(e);
+        aggioraPeso();
+       return true;
+    }
+
+    public boolean isMorto() {
+        return hp <= 0;
+    }
+    public void Saluta() {
+        System.out.println("Ciao, sono " + nome +   " di razza " + razza);
     }
 
     public int getHp() {
