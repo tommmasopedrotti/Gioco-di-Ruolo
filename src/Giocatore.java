@@ -9,19 +9,19 @@ public abstract class Giocatore {
     protected final int HP_MAX, MANA_MAX, PESO_MAX;
     protected Razza razza;
     protected ArrayList<Equip> inventario;
-    
+
     public Giocatore(String nome, int hp, int mana, int peso, Razza razza) {
         this.nome = nome;
         this.hp = this.HP_MAX = hp;
         this.mana = this.MANA_MAX = mana;
         this.peso = 0;
+        this.PESO_MAX = peso;
         this.razza = razza;
 
         this.inventario = new ArrayList<>();
-        this.PESO_MAX = 0;
     }
 
-    public void attaccaMischia(Giocatore target, int danno) {
+    public int attacca(Giocatore target, int danno) {
 
         boolean haArma = false;
 
@@ -36,7 +36,7 @@ public abstract class Giocatore {
 
         // controllo l'istanza del mio oggetto e attacco solo se ho l'arma
         if (!(this instanceof Guerriero) || !haArma) {
-            return;
+            return 0;
         }
 
         // verifico se il target ha armature e le conto
@@ -48,40 +48,49 @@ public abstract class Giocatore {
         }
 
         // modifico i puntivita del target
-        target.setHp(target.getHp() - danno / (armature + 1)); 
+        int dannoFinale = danno / (armature + 1);
+        target.setHp(target.getHp() - dannoFinale); 
+        return dannoFinale;
     }
 
-    private void aggioraPeso() {
+    // calcola il peso attuale portato dal giocatore
+    private void aggiornaPeso() {
+
         peso = 0;
         for (Equip e : inventario) {
             peso += e.getPeso();
         }
-        
     }
 
-    private void svuotaInventario() {
+    // elimina tutti gli elementi dall'inventario
+    public void svuotaInventario() {
         inventario.clear();
-        aggioraPeso();
+        aggiornaPeso();
     }
 
-    private boolean isTroppoCarico() {
-        return peso > PESO_MAX;
-        
-    }
+    // aggiungo un item all'inventario
+    public boolean aggiungiEquip(Equip nuovo) {
 
-    public boolean aggiungiEquip(Equip e) {
+        if (nuovo.getPeso() + this.peso > PESO_MAX) return false; 
 
-       if(e.getPeso() + peso > PESO_MAX) return false;
-       inventario.add(e);
-        aggioraPeso();
-       return true;
+        inventario.add(nuovo);
+        aggiornaPeso();
+
+        return true;
     }
 
     public boolean isMorto() {
+
         return hp <= 0;
     }
-    public void Saluta() {
-        System.out.println("Ciao, sono " + nome +   " di razza " + razza);
+
+    public void saluta() {
+        System.out.println("Ciao, mi chiamo " + nome + " e sono un " + razza);
+    }
+
+    // controlla se il peso attuale supera il carico massimo
+    public boolean isTroppoCarico() {
+        return peso > PESO_MAX;
     }
 
     public int getHp() {

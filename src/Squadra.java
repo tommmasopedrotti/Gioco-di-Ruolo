@@ -5,19 +5,20 @@ public class Squadra {
     private ArrayList<Giocatore> giocatori;
 
     public Squadra() {
+
         giocatori = new ArrayList<>(4);
     }
 
-    public void aggiungiGiocatore(Giocatore giocatore) {
-        giocatori.add(giocatore);
+    public void aggiungiGiocatore(Giocatore nuovo) {
 
-
+        giocatori.add(nuovo);
     }
 
     public void salutaTutti() {
+
         for (Giocatore g : giocatori) {
-            g.Saluta();
+            if (!g.isMorto())
+                g.saluta();
         }
     }
-
 }
