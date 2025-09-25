@@ -41,7 +41,9 @@
     
             return 0;
         }
-    
+
+        
+        
         public void ricaricaMana() {
     
             mana = MANA_MAX;

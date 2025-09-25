@@ -34,5 +34,20 @@ public class App {
         int danno3 = gandalf.attacca(sauron, 50);
         System.out.printf("Inflitti %d danni\n", danno3);
         team.salutaTutti();
+
+        Giocatore radagast = new Medico("Radagast", 80, 100, 30, Razza.Umano);
+
+        Medico rad= ((Medico) radagast);
+        rad.rianima(legolas);
+
+        System.out.println(legolas.getHp());
+        radagast.attacca(radagast, 50);
+        System.out.println(legolas.getHp());
+
+        team.aggiungiGiocatore(radagast);
     }
 }
+
+
+
+
