@@ -1,43 +1,51 @@
 public class Medico extends Giocatore {
     
+    private final int MANA_CURA = 20;
+
     public Medico(String nome, int hp, int mana, int peso, Razza razza) {
         super(nome, hp, mana, peso, razza);  
-
-        
     }
 
-    private final int MANA_ATT = 20;
-    private final int MANA_CURA = 10;
-    private final int cura = 30;
     
     public void ricaricaMana() {
-    
+
         mana = MANA_MAX;
+    }
+    
+    @Override
+    public int attacca(Giocatore target, int cura) {
+        
+        if (target.isMorto()) return 0;
+
+        // verificare se c'è abbastanza mana e aggiornare
+        if (mana - MANA_CURA >= 0) {
+            mana -= MANA_CURA;
+
+            int nuovoHp = target.getHp() + cura;
+            target.setHp(nuovoHp > target.HP_MAX ? target.HP_MAX : nuovoHp);
+
+            return cura;
+        }
+
+        return 0;
     }
 
     @Override
-    public int attacca(Giocatore target, int danno) {
-    
-        if(target.isMorto()) return 0;
+    public boolean aggiungiEquip(Equip nuovo) {
+        
+        // un medico non deve portare armi
+        if (nuovo.getTipo() == TipoEquip.ArmaMelee || nuovo.getTipo() == TipoEquip.ArmaRanged)
+            return false;
 
-        if(mana - MANA_ATT>=0){
-            mana -= MANA_CURA;
-           
-            int nuovoHp = target.getHp() + cura;
-            target.setHp(nuovoHp > HP_MAX? target.HP_MAX:  nuovoHp);
-            return cura;
-        }
-        return 0;
-
+        return super.aggiungiEquip(nuovo);
     }
 
     public boolean rianima(Giocatore target) {
-    
-        if(!target.isMorto()) return false;
 
-       
-        target.setHp(HP_MAX/4);
-        return true;
+        // se il target è vivo, non rianimo
+        if (!target.isMorto()) return false;
+
+        target.setHp(target.HP_MAX / 4); 
+        return true; 
     }
-
 }
